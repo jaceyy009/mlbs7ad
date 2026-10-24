@@ -44,7 +44,7 @@
         },
         {
           "channel": "Disney+",
-          "dub": "TBA",
+          "dub": ["English", "Spanish", "French"],
           "firstAirUtc": "2026-11-21T08:00:00.000Z",
           "confirmed": true,
           "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
@@ -100,7 +100,7 @@
         },
         {
           "channel": "Disney+",
-          "dub": "TBA",
+          "dub": ["English", "Spanish", "French"],
           "firstAirUtc": "2026-11-21T08:00:00.000Z",
           "confirmed": true,
           "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
@@ -142,7 +142,7 @@
         },
         {
           "channel": "Disney+",
-          "dub": "TBA",
+          "dub": ["English", "Spanish", "French"],
           "firstAirUtc": "2026-11-21T08:00:00.000Z",
           "confirmed": true,
           "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
@@ -177,7 +177,7 @@
         },
         {
           "channel": "Disney+",
-          "dub": "TBA",
+          "dub": ["English", "Spanish", "French"],
           "firstAirUtc": "2026-11-21T08:00:00.000Z",
           "confirmed": true,
           "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
@@ -205,7 +205,7 @@
         },
         {
           "channel": "Disney+",
-          "dub": "TBA",
+          "dub": ["English", "Spanish", "French"],
           "firstAirUtc": "2026-11-21T08:00:00.000Z",
           "confirmed": true,
           "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
@@ -233,7 +233,7 @@
         },
         {
           "channel": "Disney+",
-          "dub": "TBA",
+          "dub": ["English", "Spanish", "French"],
           "firstAirUtc": "2026-11-21T08:00:00.000Z",
           "confirmed": true,
           "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"

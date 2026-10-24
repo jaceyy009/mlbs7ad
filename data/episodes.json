@@ -18,6 +18,7 @@
           "channel": "TF1",
           "dub": "French",
           "firstAirUtc": "2026-11-01T07:35:00.000Z",
+          "confirmed": true,
           "source": "https://tf1pro.com/actualites/article/miraculous-nouvelle-saison"
         },
         {
@@ -66,6 +67,7 @@
           "channel": "TF1",
           "dub": "French",
           "firstAirUtc": "2026-11-01T07:35:00.000Z",
+          "confirmed": true,
           "source": "https://tf1pro.com/actualites/article/miraculous-nouvelle-saison"
         },
         {
@@ -113,7 +115,7 @@
         {
           "channel": "Disney Channel EMEA",
           "dub": "English",
-          "firstAirUtc": "2026-11-14T07:10:00.000Z",
+          "firstAirUtc": "2026-11-21T07:10:00.000Z",
           "confirmed": true,
           "source": "https://tvprofil.com/tvprogram/#!datum=2026-11-21&kanal=disney-channel"
         },
@@ -148,7 +150,7 @@
         {
           "channel": "Disney Channel EMEA",
           "dub": "English",
-          "firstAirUtc": "2026-11-14T07:10:00.000Z",
+          "firstAirUtc": "2026-11-28T07:10:00.000Z",
           "confirmed": true,
           "source": "https://tvprofil.com/tvprogram/#!datum=2026-11-28&kanal=disney-channel"
         },

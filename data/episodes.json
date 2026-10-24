@@ -1,0 +1,221 @@
+{
+  "season": 7,
+  "series": "Miraculous: Tales of Ladybug & Cat Noir",
+  "episodes": [
+    {
+      "id": "701",
+      "number": "1",
+      "title": "Replay Value (The Right Time - Part 1)",
+      "airings": [
+        {
+          "channel": "Gloob",
+          "dub": "Portuguese",
+          "firstAirUtc": "2026-10-30T22:45:00.000Z",
+          "confirmed": true,
+          "source": "https://www.instagram.com/reel/DeuH6DrtBJg/"
+        },
+        {
+          "channel": "TF1",
+          "dub": "French",
+          "firstAirUtc": "2026-11-01T07:35:00.000Z",
+          "source": "https://tf1pro.com/actualites/article/miraculous-nouvelle-saison"
+        },
+        {
+          "channel": "Disney Channel EMEA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-14T07:10:00.000Z",
+          "confirmed": true,
+          "source": "https://tvprofil.com/tvprogram/#!datum=2026-11-14&kanal=disney-channel"
+        },
+        {
+          "channel": "Disney Channel USA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-21T00:00:00.000Z",
+          "confirmed": true,
+          "source": "https://cabletvt.powerrangermail.net/index.php?topic=7217.msg19810"
+        },
+        {
+          "channel": "Disney+",
+          "dub": "TBA",
+          "firstAirUtc": "2026-11-21T08:00:00.000Z",
+          "confirmed": true,
+          "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
+        }
+        {
+          "channel": "Disney Channel CEE",
+          "dub": "English",
+          "firstAirUtc": "2026-11-23T19:20:00.000Z",
+          "confirmed": true,
+          "source": "https://www.channels.cz/files/epg-dc-czech-november-2026.xlsx"
+        }
+      ]
+    },
+    {
+      "id": "702",
+      "number": "2",
+      "title": "Chrysalis (The Right Time - Part 2)",
+      "airings": [
+        {
+          "channel": "Gloob",
+          "dub": "Portuguese",
+          "firstAirUtc": "2026-10-30T22:45:00.000Z",
+          "confirmed": true,
+          "source": "https://www.instagram.com/reel/DeuH6DrtBJg/"
+        },
+        {
+          "channel": "TF1",
+          "dub": "French",
+          "firstAirUtc": "2026-11-01T07:35:00.000Z",
+          "source": "https://tf1pro.com/actualites/article/miraculous-nouvelle-saison"
+        },
+        {
+          "channel": "Disney Channel EMEA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-14T07:35:00.000Z",
+          "confirmed": true,
+          "source": "https://tvprofil.com/tvprogram/#!datum=2026-11-14&kanal=disney-channel"
+        },
+        {
+          "channel": "Disney Channel USA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-21T00:30:00.000Z",
+          "confirmed": true,
+          "source": "https://cabletvt.powerrangermail.net/index.php?topic=7217.msg19810"
+        },
+        {
+          "channel": "Disney+",
+          "dub": "TBA",
+          "firstAirUtc": "2026-11-21T08:00:00.000Z",
+          "confirmed": true,
+          "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
+        },
+        {
+          "channel": "Disney Channel CEE",
+          "dub": "English",
+          "firstAirUtc": "2026-11-24T19:20:00.000Z",
+          "confirmed": true,
+          "source": "https://www.channels.cz/files/epg-dc-czech-november-2026.xlsx"
+        }
+      ]
+    },
+    {
+      "id": "703",
+      "number": "3",
+      "title": "Dislove",
+      "airings": [
+        {
+          "channel": "TF1",
+          "dub": "French",
+          "firstAirUtc": "2026-11-08T08:10:00.000Z",
+          "confirmed": true,
+          "source": "https://help.tf1.fr/hc/fr/articles/25544423203346-Comment-connaître-la-diffusion-des-prochains-épisodes-de-Miraculous-les-aventures-de-Ladybug-et-Chat-Noir-sur-TF1"
+        },
+        {
+          "channel": "Disney Channel EMEA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-14T07:10:00.000Z",
+          "confirmed": true,
+          "source": "https://tvprofil.com/tvprogram/#!datum=2026-11-21&kanal=disney-channel"
+        },
+        {
+          "channel": "Disney Channel USA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-21T01:00:00.000Z",
+          "confirmed": true,
+          "source": "https://cabletvt.powerrangermail.net/index.php?topic=7217.msg19810"
+        },
+        {
+          "channel": "Disney+",
+          "dub": "TBA",
+          "firstAirUtc": "2026-11-21T08:00:00.000Z",
+          "confirmed": true,
+          "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
+        },
+        {
+          "channel": "Disney Channel CEE",
+          "dub": "English",
+          "firstAirUtc": "2026-11-25T19:20:00.000Z",
+          "confirmed": true,
+          "source": "https://www.channels.cz/files/epg-dc-czech-november-2026.xlsx"
+        }
+      ]
+    },
+    {
+      "id": "704",
+      "number": "4",
+      "title": "Manageman",
+      "airings": [
+        {
+          "channel": "Disney Channel EMEA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-14T07:10:00.000Z"
+          "confirmed": true,
+          "source": "https://tvprofil.com/tvprogram/#!datum=2026-11-28&kanal=disney-channel"
+        },
+        {
+          "channel": "Disney Channel USA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-21T01:30:00.000Z",
+          "confirmed": true,
+          "source": "https://cabletvt.powerrangermail.net/index.php?topic=7217.msg19810"
+        },
+        {
+          "channel": "Disney+",
+          "dub": "TBA",
+          "firstAirUtc": "2026-11-21T08:00:00.000Z",
+          "confirmed": true,
+          "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
+        },
+        {
+          "channel": "Disney Channel CEE",
+          "dub": "English",
+          "firstAirUtc": "2026-11-26T19:20:00.000Z",
+          "confirmed": true,
+          "source": "https://www.channels.cz/files/epg-dc-czech-november-2026.xlsx"
+        }
+      ]
+    },
+    {
+      "id": "705",
+      "number": "5",
+      "title": "Marinette Duapin-Cheng",
+      "airings": [
+        {
+          "channel": "Disney Channel USA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-21T02:00:00.000Z",
+          "confirmed": true,
+          "source": "https://cabletvt.powerrangermail.net/index.php?topic=7217.msg19810"
+        },
+        {
+          "channel": "Disney+",
+          "dub": "TBA",
+          "firstAirUtc": "2026-11-21T08:00:00.000Z",
+          "confirmed": true,
+          "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
+        },
+      ]
+    },
+    {
+      "id": "706",
+      "number": "6",
+      "title": "Glaciator",
+      "airings": [
+        {
+          "channel": "Disney Channel USA",
+          "dub": "English",
+          "firstAirUtc": "2026-11-21T02:30:00.000Z",
+          "confirmed": true,
+          "source": "https://cabletvt.powerrangermail.net/index.php?topic=7217.msg19810"
+        },
+        {
+          "channel": "Disney+",
+          "dub": "TBA",
+          "firstAirUtc": "2026-11-21T08:00:00.000Z",
+          "confirmed": true,
+          "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026"
+        }
+      ]
+    }
+  ]
+}

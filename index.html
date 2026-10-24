@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101722">
-  <meta name="description" content="Confirmed Miraculous: Tales of Ladybug & Cat Noir Season 7 first-air dates by channel and dub.">
+  <meta name="description" content="Track Miraculous: Tales of Ladybug & Cat Noir Season 7 first-air dates by channel and dub.">
   <title>MLB S7 Air Dates</title>
   <link rel="stylesheet" href="css/style.css">
   <script src="js/app.js" defer></script>
@@ -13,12 +13,12 @@
   <header class="site-header">
     <a class="brand" href="./" aria-label="MLB S7 Air Dates home">
       <span class="brand-mark" aria-hidden="true">M7</span>
-      <span>
-        <strong>MLB S7 Air Dates</strong>
-        <small>Confirmed first airs only</small>
-      </span>
+      <span><strong>MLB S7 Air Dates</strong><small>Season 7 broadcast tracker</small></span>
     </a>
-    <div class="timezone-label" id="timezone-label">Times shown in your local timezone</div>
+    <div class="header-tools">
+      <span class="timezone-label" id="timezone-label">Times shown in your local timezone</span>
+      <button id="share-view" class="button button-quiet" type="button">Share view</button>
+    </div>
   </header>
 
   <main class="page-shell">
@@ -26,82 +26,98 @@
       <div>
         <p class="eyebrow">SEASON 7 BROADCAST TRACKER</p>
         <h1>Episode air dates</h1>
-        <p class="intro-copy">Find when each episode first airs, by channel and dub. Reruns are excluded.</p>
+        <p class="intro-copy">Browse first airings by date, broadcaster, and language. Reruns are excluded.</p>
       </div>
       <div class="confirmed-key"><span class="status-dot"></span> Confirmed first airs</div>
     </section>
 
+    <section class="next-airing-panel" aria-labelledby="next-airing-title">
+      <div class="next-airing-heading"><p class="eyebrow">UP NEXT</p><h2 id="next-airing-title">Next confirmed airing</h2></div>
+      <div id="next-airing-content" class="next-airing-content"><p class="muted">Loading schedule…</p></div>
+    </section>
+
     <section class="search-panel" aria-label="Search and filters">
       <label class="search-box">
-        <span class="sr-only">Search episodes, channels, or dubs</span>
+        <span class="sr-only">Search episodes, channels, languages, or status</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
-        <input id="search-input" type="search" placeholder="Search episode, title, channel, or dub…" autocomplete="off">
+        <input id="search-input" type="search" placeholder="Search episode, title, channel, or language…" autocomplete="off">
         <button id="clear-search" class="clear-search" type="button" aria-label="Clear search" hidden>×</button>
       </label>
       <div class="filters">
-        <label>
-          <span>Channel</span>
-          <select id="channel-filter"><option value="">All channels</option></select>
-        </label>
-        <label>
-          <span>Dub / language</span>
-          <select id="dub-filter"><option value="">All dubs</option></select>
-        </label>
-        <button id="reset-filters" class="button button-quiet" type="button">Reset</button>
+        <label><span>Channel</span><select id="channel-filter"><option value="">All channels</option></select></label>
+        <label><span>Dub / language</span><select id="dub-filter"><option value="">All dubs</option></select></label>
+        <label><span>Status</span><select id="status-filter"><option value="">All visible statuses</option></select></label>
+        <button id="reset-filters" class="button button-quiet" type="button">Reset filters</button>
+      </div>
+      <div class="search-options">
+        <label class="check-label"><input id="include-unconfirmed" type="checkbox"> <span>Include unconfirmed airings</span></label>
+        <p class="muted small">Off by default. Rumors and provisional dates are labeled clearly and are never presented as confirmed.</p>
       </div>
     </section>
 
+    <details class="settings-panel" id="settings-panel">
+      <summary>Preferences and tools</summary>
+      <div class="settings-grid">
+        <label><span>Display time zone</span><select id="timezone-select"><option value="local">Use device time zone</option></select></label>
+        <label><span>Jump to episode</span><div class="inline-control"><input id="episode-jump" type="search" placeholder="Episode number or title"><button id="episode-jump-button" class="button button-secondary" type="button">Find</button></div></label>
+        <label><span>Favorite channels</span><select id="favorite-channels" multiple size="3" aria-label="Favorite channels"></select></label>
+        <label><span>Favorite dubs / languages</span><select id="favorite-dubs" multiple size="3" aria-label="Favorite dubs and languages"></select></label>
+        <div class="setting-actions">
+          <label class="check-label"><input id="favorites-only" type="checkbox"> <span>Show favorites only</span></label>
+          <button id="save-preferences" class="button button-secondary" type="button">Save preferences</button>
+        </div>
+        <div class="setting-actions export-actions">
+          <button id="export-ics" class="button button-secondary" type="button">Export confirmed airings (.ics)</button>
+          <button id="export-csv" class="button button-secondary" type="button">Export visible schedule (.csv)</button>
+          <button id="enable-reminders" class="button button-secondary" type="button">Enable browser reminder</button>
+          <button id="validate-data" class="button button-secondary" type="button">Validate schedule data</button>
+        </div>
+      </div>
+      <p id="settings-message" class="muted small" aria-live="polite"></p>
+      <div id="validation-results" class="validation-results" hidden aria-live="polite"></div>
+    </details>
+
     <section class="calendar-panel" aria-label="Air-date calendar">
       <div class="calendar-toolbar">
-        <div class="month-heading">
-          <h2 id="month-title">Loading calendar…</h2>
-          <span id="month-summary" class="muted"></span>
-        </div>
+        <div class="month-heading"><h2 id="month-title">Loading calendar…</h2><span id="month-summary" class="muted"></span></div>
         <div class="calendar-actions">
           <button id="today-button" class="button button-secondary" type="button">Today</button>
-          <div class="month-arrows">
-            <button id="prev-month" class="icon-button" type="button" aria-label="Previous month">‹</button>
-            <button id="next-month" class="icon-button" type="button" aria-label="Next month">›</button>
-          </div>
+          <div class="month-arrows"><button id="prev-month" class="icon-button" type="button" aria-label="Previous month">‹</button><button id="next-month" class="icon-button" type="button" aria-label="Next month">›</button></div>
         </div>
       </div>
-
       <div class="calendar-grid" id="calendar-grid" aria-label="Month calendar">
-        <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
-        <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+        <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div><div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
       </div>
-      <p class="calendar-help">Select a date to see all confirmed first airings on that local day.</p>
+      <div class="calendar-legend"><span><i class="legend-dot confirmed"></i> Confirmed</span><span><i class="legend-dot provisional"></i> Unconfirmed</span></div>
+      <div class="calendar-bottom"><p class="calendar-help">Select a date to see first airings on that day in the selected time zone.</p><button id="toggle-list-view" class="button button-quiet" type="button">Switch to list view</button></div>
+      <div id="list-view" class="list-view" hidden></div>
     </section>
 
     <section class="day-panel" id="day-panel" aria-labelledby="day-title">
       <div class="day-heading">
-        <div>
-          <p class="eyebrow">DAILY SCHEDULE</p>
-          <h2 id="day-title">Select a date</h2>
-          <p id="day-summary" class="muted">Choose a day on the calendar to view its airings.</p>
-        </div>
-        <button id="back-to-calendar" class="button button-secondary back-button" type="button">← Calendar</button>
+        <div><p class="eyebrow">DAILY SCHEDULE</p><h2 id="day-title">Select a date</h2><p id="day-summary" class="muted">Choose a day on the calendar to view its airings.</p></div>
+        <button id="back-to-calendar" class="button button-secondary back-button" type="button">↑ Calendar</button>
       </div>
       <div id="schedule-content"></div>
     </section>
 
     <section class="search-results" id="search-results" hidden aria-live="polite">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">SEARCH RESULTS</p>
-          <h2>Matching airings</h2>
-        </div>
-        <span id="result-count" class="result-count"></span>
-      </div>
+      <div class="section-heading"><div><p class="eyebrow">SEARCH RESULTS</p><h2>Matching airings</h2></div><span id="result-count" class="result-count"></span></div>
       <div id="results-content"></div>
     </section>
+
+    <details class="history-panel" id="history-panel">
+      <summary>Schedule change history</summary>
+      <p class="muted small">Changes are shown here when they are recorded in the JSON data. This static site does not automatically monitor broadcaster websites.</p>
+      <div id="history-content"><p class="muted">No history loaded.</p></div>
+    </details>
 
     <p id="load-error" class="error-message" role="alert" hidden></p>
   </main>
 
   <footer class="site-footer">
-    <p>Only confirmed first-time airings are listed. Air times are stored in UTC and displayed in your browser’s local timezone.</p>
-    <p class="footer-note">Fan-made schedule tracker. Always check the linked broadcaster source for the latest details.</p>
+    <p>Confirmed first-time airings are the default view. Air times are stored in UTC and displayed in your selected time zone.</p>
+    <p class="footer-note">Fan-made schedule tracker. Verify dates with the linked broadcaster source. Last checked dates are supplied manually.</p>
   </footer>
 </body>
 </html>

@@ -55,6 +55,12 @@
           "firstAirUtc": "2026-11-23T19:20:00.000Z",
           "confirmed": true,
           "source": "https://www.channels.cz/files/epg-dc-czech-november-2026.xlsx"
+        },
+        {
+          "channel": "Disney Channel LATAM",
+          "dub": "Spanish",
+          "firstAirUtc": "2026-11-23T23:30:00.000Z",
+          "confirmed": false
         }
       ]
     },

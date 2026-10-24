@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101722">
+  <meta name="description" content="Confirmed Miraculous: Tales of Ladybug & Cat Noir Season 7 first-air dates by channel and dub.">
+  <title>MLB S7 Air Dates</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="MLB S7 Air Dates home">
+      <span class="brand-mark" aria-hidden="true">M7</span>
+      <span>
+        <strong>MLB S7 Air Dates</strong>
+        <small>Confirmed first airs only</small>
+      </span>
+    </a>
+    <div class="timezone-label" id="timezone-label">Times shown in your local timezone</div>
+  </header>
+
+  <main class="page-shell">
+    <section class="intro">
+      <div>
+        <p class="eyebrow">SEASON 7 BROADCAST TRACKER</p>
+        <h1>Episode air dates</h1>
+        <p class="intro-copy">Find when each episode first airs, by channel and dub. Reruns are excluded.</p>
+      </div>
+      <div class="confirmed-key"><span class="status-dot"></span> Confirmed first airs</div>
+    </section>
+
+    <section class="search-panel" aria-label="Search and filters">
+      <label class="search-box">
+        <span class="sr-only">Search episodes, channels, or dubs</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+        <input id="search-input" type="search" placeholder="Search episode, title, channel, or dub…" autocomplete="off">
+        <button id="clear-search" class="clear-search" type="button" aria-label="Clear search" hidden>×</button>
+      </label>
+      <div class="filters">
+        <label>
+          <span>Channel</span>
+          <select id="channel-filter"><option value="">All channels</option></select>
+        </label>
+        <label>
+          <span>Dub / language</span>
+          <select id="dub-filter"><option value="">All dubs</option></select>
+        </label>
+        <button id="reset-filters" class="button button-quiet" type="button">Reset</button>
+      </div>
+    </section>
+
+    <section class="calendar-panel" aria-label="Air-date calendar">
+      <div class="calendar-toolbar">
+        <div class="month-heading">
+          <h2 id="month-title">Loading calendar…</h2>
+          <span id="month-summary" class="muted"></span>
+        </div>
+        <div class="calendar-actions">
+          <button id="today-button" class="button button-secondary" type="button">Today</button>
+          <div class="month-arrows">
+            <button id="prev-month" class="icon-button" type="button" aria-label="Previous month">‹</button>
+            <button id="next-month" class="icon-button" type="button" aria-label="Next month">›</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="calendar-grid" id="calendar-grid" aria-label="Month calendar">
+        <div class="weekday">Sun</div><div class="weekday">Mon</div><div class="weekday">Tue</div>
+        <div class="weekday">Wed</div><div class="weekday">Thu</div><div class="weekday">Fri</div><div class="weekday">Sat</div>
+      </div>
+      <p class="calendar-help">Select a date to see all confirmed first airings on that local day.</p>
+    </section>
+
+    <section class="day-panel" id="day-panel" aria-labelledby="day-title">
+      <div class="day-heading">
+        <div>
+          <p class="eyebrow">DAILY SCHEDULE</p>
+          <h2 id="day-title">Select a date</h2>
+          <p id="day-summary" class="muted">Choose a day on the calendar to view its airings.</p>
+        </div>
+        <button id="back-to-calendar" class="button button-secondary back-button" type="button">← Calendar</button>
+      </div>
+      <div id="schedule-content"></div>
+    </section>
+
+    <section class="search-results" id="search-results" hidden aria-live="polite">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SEARCH RESULTS</p>
+          <h2>Matching airings</h2>
+        </div>
+        <span id="result-count" class="result-count"></span>
+      </div>
+      <div id="results-content"></div>
+    </section>
+
+    <p id="load-error" class="error-message" role="alert" hidden></p>
+  </main>
+
+  <footer class="site-footer">
+    <p>Only confirmed first-time airings are listed. Air times are stored in UTC and displayed in your browser’s local timezone.</p>
+    <p class="footer-note">Fan-made schedule tracker. Always check the linked broadcaster source for the latest details.</p>
+  </footer>
+</body>
+</html>

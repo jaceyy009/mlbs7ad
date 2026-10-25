@@ -169,7 +169,7 @@
         },
         {
           "channel": "RTS 1",
-          "region": "Switzerland"
+          "region": "Switzerland",
           "dub": "French",
           "firstAirUtc": "2026-11-01T08:10:00.000Z",
           "status": "confirmed",

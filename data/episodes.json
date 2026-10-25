@@ -133,6 +133,12 @@
           "source": "https://help.tf1.fr/hc/fr/articles/25544423203346-Comment-connaître-la-diffusion-des-prochains-épisodes-de-Miraculous-les-aventures-de-Ladybug-et-Chat-Noir-sur-TF1"
         },
         {
+          "channel": "RTS 1",
+          "dub": "French",
+          "firstAirUtc": "2026-11-08T08:00:00.000Z",
+          "confirmed": false
+        },
+        {
           "channel": "Disney Channel EMEA",
           "dub": "English",
           "firstAirUtc": "2026-11-21T07:10:00.000Z",

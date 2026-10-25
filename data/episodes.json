@@ -1,4 +1,5 @@
 {
+  "schemaVersion": 2,
   "season": 7,
   "series": "Miraculous: Tales of Ladybug & Cat Noir",
   "episodes": [
@@ -9,65 +10,121 @@
       "airings": [
         {
           "channel": "Gloob",
+          "region": "Brazil",
           "dub": "Portuguese",
           "firstAirUtc": "2026-10-30T22:45:00.000Z",
-          "confirmed": true,
+          "status": "confirmed",
           "source": "https://www.instagram.com/reel/DeuH6DrtBJg",
-          "lastVerified": "2026-10-25"
+          "sourcePublisher": "Mundo Gloob",
+          "evidenceType": "Official teaser",
+          "lastVerified": "2026-10-25",
+          "history": [
+            {
+              "date": "2026-10-16",
+              "message": "Announced 701 premiere date."
+            },
+            {
+              "date": "2026-10-20",
+              "message": "Announced 701 and 702 premiere date."
+            }
+          ]
         },
         {
           "channel": "TF1",
+          "region": "France",
           "dub": "French",
           "firstAirUtc": "2026-11-01T07:35:00.000Z",
-          "confirmed": true,
+          "status": "confirmed",
           "source": "https://tf1pro.com/actualites/article/miraculous-nouvelle-saison",
-          "lastVerified": "2026-10-25"
+          "sourcePublisher": "TF1 Pro",
+          "evidenceType": "Official announcement",
+          "lastVerified": "2026-10-25",
+          "history": [
+            {
+              "date": "2026-10-13",
+              "message": "Announced 701 and 702 premiere date."
+            }
+          ]
         },
         {
           "channel": "RTS 1",
+          "region": "Switzerland",
           "dub": "French",
           "firstAirUtc": "2026-11-01T07:45:00.000Z",
-          "confirmed": true,
+          "status": "confirmed",
           "source": "https://www.teleboy.ch/en/tv-guide/channels/331/rts1hd?date=2026-11-01",
+          "sourcePublisher": "Teleboy",
+          "evidenceType": "Official schedule",
           "lastVerified": "2026-10-25"
         },
         {
           "channel": "Disney Channel EMEA",
+          "region": "Europe, Middle-East and Africa",
           "dub": "English",
           "firstAirUtc": "2026-11-14T07:10:00.000Z",
-          "confirmed": true,
+          "status": "confirmed",
           "source": "https://tvprofil.com/tvprogram/#!datum=2026-11-14&kanal=disney-channel",
+          "sourcePublisher": "TvProfil",
+          "evidenceType": "Official schedule",
           "lastVerified": "2026-10-25"
         },
         {
           "channel": "Disney Channel USA",
+          "region": "United States",
           "dub": "English",
           "firstAirUtc": "2026-11-21T00:00:00.000Z",
-          "confirmed": true,
+          "status": "confirmed",
           "source": "https://cabletvt.powerrangermail.net/index.php?topic=7217.msg19810",
-          "lastVerified": "2026-10-25"
+          "sourcePublisher": "Cable Forum",
+          "evidenceType": "Unofficial premire schedule",
+          "lastVerified": "2026-10-25",
+          "history": [
+            {
+              "date": "2026-10-02",
+              "message": "Released Disney channel November 2026 Premieres."
+            }
+          ]
         },
         {
           "channel": "Disney+",
+          "region": "North America",
           "dub": ["English", "Spanish", "French"],
           "firstAirUtc": "2026-11-21T08:00:00.000Z",
-          "confirmed": true,
+          "status": "confirmed",
           "source": "https://press.disneyplus.com/news/next-on-disney-plus-november-2026",
-          "lastVerified": "2026-10-25"
+          "sourcePublisher": "Disney+ Press",
+          "evidenceType": "Official release schedule",
+          "lastVerified": "2026-10-25",
+          "history": [
+            {
+              "date": "2026-10-15",
+              "message": "Released the Next On Disney+ November 2026 schedule."
+            }
+          ]
         },
         {
           "channel": "Disney Channel CEE",
+          "region": "Central and Eastern Europe",
           "dub": "English",
           "firstAirUtc": "2026-11-23T19:20:00.000Z",
-          "confirmed": true,
+          "status": "confirmed",
           "source": "https://www.channels.cz/files/epg-dc-czech-november-2026.xlsx",
-          "lastVerified": "2026-10-25"
+          "sourcePublisher": "Channels",
+          "evidenceType": "Official airing schedule",
+          "lastVerified": "2026-10-25",
+          "history": [
+            {
+              "date": "2026-10-05",
+              "message": "Released the Disney Channel CEE November 2026 airing schedule."
+            }
+          ]
         },
         {
           "channel": "Disney Channel LATAM",
+          "region": "Latin America",
           "dub": "Spanish",
           "firstAirUtc": "2026-11-23T23:30:00.000Z",
-          "confirmed": false
+          "status": "announced"
         }
       ]
     },
@@ -75,6 +132,7 @@
       "id": "702",
       "number": "2",
       "title": "Chrysalis (The Right Time - Part 2)",
+      "todo": "do this one and beyond!! god. so much!!",
       "airings": [
         {
           "channel": "Gloob",

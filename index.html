@@ -46,6 +46,7 @@
       <div class="filters">
         <label><span>Channel</span><select id="channel-filter"><option value="">All channels</option></select></label>
         <label><span>Dub / language</span><select id="dub-filter"><option value="">All dubs</option></select></label>
+        <label><span>Region</span><select id="region-filter"><option value="">All regions</option></select></label>
         <label><span>Status</span><select id="status-filter"><option value="">All visible statuses</option></select></label>
         <button id="reset-filters" class="button button-quiet" type="button">Reset filters</button>
       </div>
@@ -71,6 +72,7 @@
           <button id="export-csv" class="button button-secondary" type="button">Export visible schedule (.csv)</button>
           <button id="enable-reminders" class="button button-secondary" type="button">Enable browser reminder</button>
           <button id="validate-data" class="button button-secondary" type="button">Validate schedule data</button>
+          <a class="button button-secondary" href="calendar-feed.ics" target="_blank" rel="noopener">Open calendar subscription feed</a>
         </div>
       </div>
       <p id="settings-message" class="muted small" aria-live="polite"></p>
@@ -105,6 +107,18 @@
       <div class="section-heading"><div><p class="eyebrow">SEARCH RESULTS</p><h2>Matching airings</h2></div><span id="result-count" class="result-count"></span></div>
       <div id="results-content"></div>
     </section>
+
+    <section class="watchlist-panel" aria-labelledby="watchlist-title">
+      <div class="section-heading"><div><p class="eyebrow">YOUR TRACKER</p><h2 id="watchlist-title">My watchlist</h2></div><span id="watchlist-count" class="result-count">0 episodes</span></div>
+      <p class="muted small">Saved only in this browser. Add episodes to your watchlist or mark them watched; no account is required.</p>
+      <div id="watchlist-content"></div>
+    </section>
+
+    <details class="verification-panel" id="verification-panel">
+      <summary>Source verification center</summary>
+      <p class="muted small">This dashboard checks the metadata entered in the JSON file. It cannot independently verify whether a source is truthful or still online.</p>
+      <div id="verification-content"></div>
+    </details>
 
     <details class="history-panel" id="history-panel">
       <summary>Schedule change history</summary>

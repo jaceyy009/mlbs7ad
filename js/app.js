@@ -18,19 +18,19 @@ const state = {
   episodes: [], changeLog: [], month: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
   selectedDate: dateKeyInZone(new Date(), localZone), search: "", channel: "", dub: "", status: "",
   includeUnconfirmed: false, timeZone: localZone, favoritesOnly: false,
-  favoriteChannels: [], favoriteDubs: [], listView: false, reminderEnabled: false, notifiedKeys: new Set()
+  favoriteChannels: [], favoriteDubs: [], region: "", watchedEpisodes: [], watchlistEpisodes: [], listView: false, reminderEnabled: false, notifiedKeys: new Set()
 };
 const el = {};
 document.addEventListener("DOMContentLoaded", init);
 
 async function init() {
   const ids = [
-    "timezone-label", "search-input", "clear-search", "channel-filter", "dub-filter", "status-filter", "reset-filters",
+    "timezone-label", "search-input", "clear-search", "channel-filter", "dub-filter", "region-filter", "status-filter", "reset-filters",
     "include-unconfirmed", "month-title", "month-summary", "calendar-grid", "prev-month", "next-month", "today-button",
     "day-title", "day-summary", "schedule-content", "search-results", "result-count", "results-content", "load-error", "back-to-calendar",
     "next-airing-content", "timezone-select", "episode-jump", "episode-jump-button", "favorite-channels", "favorite-dubs", "favorites-only",
     "save-preferences", "settings-message", "validation-results", "validate-data", "export-ics", "export-csv", "enable-reminders",
-    "share-view", "toggle-list-view", "list-view", "history-content"
+    "share-view", "toggle-list-view", "list-view", "history-content", "watchlist-content", "watchlist-count", "verification-content"
   ];
   ids.forEach(id => el[id] = document.getElementById(id));
   state.timeZone = localZone;
@@ -78,13 +78,14 @@ function bindEvents() {
   });
   el["channel-filter"].addEventListener("change", event => { state.channel = event.target.value; renderAll(); updateUrlState(); });
   el["dub-filter"].addEventListener("change", event => { state.dub = event.target.value; renderAll(); updateUrlState(); });
+  el["region-filter"].addEventListener("change", event => { state.region = event.target.value; renderAll(); updateUrlState(); });
   el["status-filter"].addEventListener("change", event => { state.status = event.target.value; renderAll(); updateUrlState(); });
   el["include-unconfirmed"].addEventListener("change", event => {
     state.includeUnconfirmed = event.target.checked; populateFilters(); renderAll(); updateUrlState();
   });
   el["reset-filters"].addEventListener("click", () => {
-    state.search = ""; state.channel = ""; state.dub = ""; state.status = "";
-    el["search-input"].value = ""; el["channel-filter"].value = ""; el["dub-filter"].value = ""; el["status-filter"].value = "";
+    state.search = ""; state.channel = ""; state.dub = ""; state.region = ""; state.status = "";
+    el["search-input"].value = ""; el["channel-filter"].value = ""; el["dub-filter"].value = ""; el["region-filter"].value = ""; el["status-filter"].value = "";
     el["clear-search"].hidden = true; renderAll(); updateUrlState();
   });
   el["back-to-calendar"].addEventListener("click", () => document.querySelector(".calendar-panel").scrollIntoView({ behavior: "smooth", block: "start" }));
@@ -134,6 +135,11 @@ function normalizeLanguages(airing) {
     seen.add(key); return true;
   });
 }
+function normalizeRegions(airing) {
+  let raw = airing.regions ?? airing.region ?? airing.country ?? [];
+  if (!Array.isArray(raw)) raw = [raw];
+  return uniqueSorted(raw.map(value => String(value).trim()).filter(Boolean));
+}
 function normalizeStatus(airing) {
   if (typeof airing.status === "string" && airing.status.trim()) return airing.status.trim().toLowerCase();
   if (airing.confirmed === true) return "confirmed";
@@ -149,7 +155,8 @@ function rawAirings() {
       const date = parseTimestamp(airing.firstAirUtc);
       if (!date || !SCHEDULE_STATUSES.has(status)) continue;
       const languages = normalizeLanguages(airing);
-      result.push({ ...airing, episode, status, languages, date, localDate: dateKeyInZone(date, state.timeZone) });
+      const regions = normalizeRegions(airing);
+      result.push({ ...airing, episode, status, languages, regions, date, localDate: dateKeyInZone(date, state.timeZone) });
     }
   }
   return result;
@@ -170,6 +177,7 @@ function visibleAirings({ includeSearch = true, confirmedOnly = false } = {}) {
     if (!isConfirmed(item) && !(state.includeUnconfirmed && PROVISIONAL_STATUSES.has(item.status))) return false;
     if (state.channel && item.channel !== state.channel) return false;
     if (state.dub && !item.languages.some(language => language.toLocaleLowerCase() === state.dub.toLocaleLowerCase())) return false;
+    if (state.region && !item.regions.some(region => region.toLocaleLowerCase() === state.region.toLocaleLowerCase())) return false;
     if (state.status && item.status !== state.status) return false;
     if (state.favoritesOnly) {
       const channelMatch = state.favoriteChannels.length && state.favoriteChannels.includes(item.channel);
@@ -177,7 +185,7 @@ function visibleAirings({ includeSearch = true, confirmedOnly = false } = {}) {
       if (!channelMatch && !dubMatch) return false;
     }
     if (!query) return true;
-    const haystack = [item.episode.id, item.episode.number, item.episode.title, item.episode.titleOriginal, item.channel, ...item.languages, item.status, item.source]
+    const haystack = [item.episode.id, item.episode.number, item.episode.title, item.episode.titleOriginal, item.channel, ...item.languages, ...item.regions, item.status, item.source, item.sourcePublisher, item.evidenceType]
       .filter(value => value !== undefined && value !== null).join(" ").toLocaleLowerCase();
     return haystack.includes(query);
   });
@@ -188,14 +196,18 @@ function populateFilters() {
   const channels = uniqueSorted(visible.map(a => a.channel));
   const languages = uniqueSorted(visible.flatMap(a => a.languages));
   const statuses = uniqueSorted(visible.map(a => a.status));
+  const regions = uniqueSorted(visible.flatMap(a => a.regions));
   if (state.channel && !channels.includes(state.channel)) state.channel = "";
   if (state.dub && !languages.includes(state.dub)) state.dub = "";
+  if (state.region && !regions.includes(state.region)) state.region = "";
   if (state.status && !statuses.includes(state.status)) state.status = "";
   fillSelect(el["channel-filter"], channels, "All channels");
   fillSelect(el["dub-filter"], languages, "All dubs");
+  fillSelect(el["region-filter"], regions, "All regions");
   fillSelect(el["status-filter"], statuses.map(s => ({ value: s, label: statusLabel(s) })), "All visible statuses", true);
   el["channel-filter"].value = state.channel;
   el["dub-filter"].value = state.dub;
+  el["region-filter"].value = state.region;
   el["status-filter"].value = state.status;
 }
 function uniqueSorted(values) { const unique = new Map(); values.filter(Boolean).forEach(value => { const label = String(value).trim(); if (label && !unique.has(label.toLocaleLowerCase())) unique.set(label.toLocaleLowerCase(), label); }); return [...unique.values()].sort((a, b) => a.localeCompare(b)); }
@@ -218,7 +230,7 @@ function fillMultiSelect(select, values, selected) {
   select.replaceChildren();
   values.forEach(value => { const option = new Option(value, value); option.selected = selected.includes(value); select.add(option); });
 }
-function renderAll() { renderCalendar(); renderSelectedDay(); renderSearch(); renderNextAiring(); renderHistory(); }
+function renderAll() { renderCalendar(); renderSelectedDay(); renderSearch(); renderNextAiring(); renderHistory(); renderWatchlist(); renderVerification(); }
 function changeMonth(delta) { state.month = new Date(state.month.getFullYear(), state.month.getMonth() + delta, 1); renderCalendar(); updateUrlState(); }
 
 function renderCalendar() {
@@ -292,18 +304,18 @@ function renderSelectedDay() {
     el["schedule-content"].append(makeEmptyState("No visible first airings on this date", state.includeUnconfirmed ? "No matching airings were found for this date. Try another date or adjust your filters." : "There are no matching confirmed airings for this date. Enable ‘Include unconfirmed airings’ to see provisional entries, if any.")); return;
   }
   const table = document.createElement("table"); table.className = "schedule-table";
-  table.innerHTML = "<thead><tr><th>Time</th><th>Episode</th><th>Channel</th><th>Dub / language</th><th>Status</th><th>Source</th></tr></thead>";
+  table.innerHTML = "<thead><tr><th>Time</th><th>Episode</th><th>Channel</th><th>Dub / language</th><th>Region</th><th>Status</th><th>Source</th><th>Watchlist</th></tr></thead>";
   const tbody = document.createElement("tbody");
   entries.forEach(item => {
     const tr = document.createElement("tr");
-    tr.append(cell(makeTimeNode(item.date)), cell(makeEpisodeNode(item.episode)), cell(textNode(item.channel || "Not specified", "channel-name")), cell(makeLanguageNodes(item.languages)), cell(makeStatusNode(item.status)), cell(makeSourceNode(item.source, item.lastVerified)));
+    tr.append(cell(makeTimeNode(item.date)), cell(makeEpisodeNode(item.episode)), cell(textNode(item.channel || "Not specified", "channel-name")), cell(makeLanguageNodes(item.languages)), cell(textNode(item.regions.join(" · ") || "Not specified", "muted")), cell(makeStatusNode(item.status)), cell(makeSourceNode(item.source, item.lastVerified)), cell(makeWatchButton(item.episode)));
     tbody.append(tr);
   });
   table.append(tbody); el["schedule-content"].append(table);
   const cards = document.createElement("div"); cards.className = "airing-cards"; entries.forEach(item => cards.append(makeAiringCard(item))); el["schedule-content"].append(cards);
 }
 function renderSearch() {
-  const queryActive = Boolean(state.search || state.channel || state.dub || state.status || state.favoritesOnly);
+  const queryActive = Boolean(state.search || state.channel || state.dub || state.region || state.status || state.favoritesOnly);
   el["search-results"].hidden = !queryActive; if (!queryActive) return;
   const entries = visibleAirings(); el["result-count"].textContent = `${entries.length} ${entries.length === 1 ? "result" : "results"}`; el["results-content"].replaceChildren();
   if (!entries.length) { el["results-content"].append(makeEmptyState("No matching airings", "Try another episode number, title, channel, language, or status.")); return; }
@@ -313,7 +325,7 @@ function renderSearch() {
     const meta = document.createElement("div"); meta.className = "result-meta"; meta.append(textNode(item.channel || "Channel not specified", "dub-pill"), makeLanguageNodes(item.languages), makeStatusNode(item.status)); main.append(meta);
     const dateButton = document.createElement("button"); dateButton.type = "button"; dateButton.className = "button button-secondary result-date"; dateButton.textContent = `${formatDate(item.date)} · ${formatTime(item.date)}`;
     dateButton.addEventListener("click", () => { state.selectedDate = item.localDate; state.month = monthFromKey(item.localDate); renderAll(); document.querySelector(".day-panel").scrollIntoView({ behavior: "smooth", block: "start" }); });
-    row.append(main, dateButton); el["results-content"].append(row);
+    row.append(main, makeWatchButton(item.episode), dateButton); el["results-content"].append(row);
   });
 }
 function renderNextAiring() {
@@ -361,12 +373,13 @@ function makeAiringCard(item) {
   const timeWrap = document.createElement("div"); timeWrap.append(textNode(formatTime(item.date), "card-time"), textNode(formatDate(item.date), "card-time-date"));
   top.append(timeWrap, makeStatusNode(item.status)); card.append(top, makeEpisodeNode(item.episode));
   const meta = document.createElement("div"); meta.className = "card-meta";
-  meta.append(makeMetaBlock("CHANNEL", item.channel || "Not specified"), makeMetaBlock("DUB / LANGUAGE", item.languages.join(" · ") || "Not specified")); card.append(meta);
+  meta.append(makeMetaBlock("CHANNEL", item.channel || "Not specified"), makeMetaBlock("DUB / LANGUAGE", item.languages.join(" · ") || "Not specified"), makeMetaBlock("REGION", item.regions.join(" · ") || "Not specified")); card.append(meta);
+  card.append(makeWatchButton(item.episode));
   const bottom = document.createElement("div"); bottom.className = "card-bottom"; bottom.append(makeSourceNode(item.source, item.lastVerified)); card.append(bottom); return card;
 }
 function makeCompactAiring(item) {
   const row = document.createElement("div"); row.className = "compact-airing";
-  row.append(textNode(formatTime(item.date), "air-time"), makeEpisodeNode(item.episode), textNode(item.channel || "Channel not specified", "muted"), makeLanguageNodes(item.languages), makeStatusNode(item.status)); return row;
+  row.append(textNode(formatTime(item.date), "air-time"), makeEpisodeNode(item.episode), textNode(item.channel || "Channel not specified", "muted"), makeLanguageNodes(item.languages), textNode(item.regions.join(" · ") || "Region unspecified", "muted small"), makeStatusNode(item.status), makeWatchButton(item.episode)); return row;
 }
 function makeMetaBlock(label, value) { const block = document.createElement("div"); block.append(textNode(label, "meta-label"), textNode(value, "meta-value")); return block; }
 function makeTimeNode(date) { const wrap = document.createElement("div"); wrap.append(textNode(formatTime(date), "air-time"), textNode(formatDate(date), "air-date-small")); return wrap; }
@@ -374,15 +387,18 @@ function makeEpisodeNode(episode) {
   const wrap = document.createElement("div"); const title = document.createElement("div"); title.className = "episode-name";
   const number = episode.number !== undefined ? episode.number : episode.id; title.textContent = `Episode ${number ?? "?"}${episode.title ? ` — ${episode.title}` : ""}`; wrap.append(title);
   if (episode.titleOriginal) wrap.append(textNode(episode.titleOriginal, "episode-subtitle"));
+  if (episode.productionCode) wrap.append(textNode(`Production code: ${episode.productionCode}`, "episode-subtitle"));
   const episodeKey = String(episode.id ?? episode.number ?? "");
   const related = allAirings().filter(item => String(item.episode.id ?? item.episode.number ?? "") === episodeKey);
-  if (episode.synopsis || episode.description || related.length > 1) {
+  if (episode.synopsis || episode.description || episode.airDateNotes || episode.productionCode || episode.titleTranslations || related.length > 0) {
     const details = document.createElement("details"); details.className = "episode-details";
     const summary = document.createElement("summary"); summary.textContent = "Episode details"; details.append(summary);
     if (episode.synopsis || episode.description) {
       const description = document.createElement("p"); description.textContent = episode.synopsis || episode.description; details.append(description);
     }
-    if (related.length > 1) {
+    if (episode.titleTranslations && typeof episode.titleTranslations === "object") { const translations = Object.entries(episode.titleTranslations).map(([lang, title]) => `${lang}: ${title}`).join(" · "); if (translations) details.append(textNode(`Title translations — ${translations}`, "episode-subtitle")); }
+    if (episode.airDateNotes) { const notes = document.createElement("p"); notes.textContent = episode.airDateNotes; details.append(notes); }
+    if (related.length > 0) {
       const heading = document.createElement("strong"); heading.className = "details-subheading"; heading.textContent = "Known first airings"; details.append(heading);
       const list = document.createElement("ul"); list.className = "episode-airing-list";
       related.forEach(item => {
@@ -435,6 +451,8 @@ function loadPreferences() {
     const saved = JSON.parse(localStorage.getItem("mlbS7Preferences") || "{}");
     state.favoriteChannels = Array.isArray(saved.favoriteChannels) ? saved.favoriteChannels : [];
     state.favoriteDubs = Array.isArray(saved.favoriteDubs) ? saved.favoriteDubs : [];
+    state.watchedEpisodes = Array.isArray(saved.watchedEpisodes) ? saved.watchedEpisodes : [];
+    state.watchlistEpisodes = Array.isArray(saved.watchlistEpisodes) ? saved.watchlistEpisodes : [];
     state.favoritesOnly = saved.favoritesOnly === true;
     state.includeUnconfirmed = saved.includeUnconfirmed === true;
     if (saved.timeZone && (saved.timeZone === localZone || saved.timeZone === "UTC" || isTimeZone(saved.timeZone))) state.timeZone = saved.timeZone;
@@ -445,21 +463,21 @@ function loadPreferences() {
 function savePreferences() {
   state.favoriteChannels = [...el["favorite-channels"].selectedOptions].map(option => option.value);
   state.favoriteDubs = [...el["favorite-dubs"].selectedOptions].map(option => option.value);
-  try { localStorage.setItem("mlbS7Preferences", JSON.stringify({ favoriteChannels: state.favoriteChannels, favoriteDubs: state.favoriteDubs, favoritesOnly: state.favoritesOnly, includeUnconfirmed: state.includeUnconfirmed, timeZone: state.timeZone })); el["settings-message"].textContent = "Preferences saved in this browser."; }
+  try { localStorage.setItem("mlbS7Preferences", JSON.stringify({ favoriteChannels: state.favoriteChannels, favoriteDubs: state.favoriteDubs, watchedEpisodes: state.watchedEpisodes, watchlistEpisodes: state.watchlistEpisodes, favoritesOnly: state.favoritesOnly, includeUnconfirmed: state.includeUnconfirmed, timeZone: state.timeZone })); el["settings-message"].textContent = "Preferences saved in this browser."; }
   catch (_) { el["settings-message"].textContent = "This browser does not allow local storage; preferences will last only until you leave this page."; }
   renderAll();
 }
 function isTimeZone(zone) { try { new Intl.DateTimeFormat("en", { timeZone: zone }); return true; } catch (_) { return false; } }
 function applyUrlState() {
   const params = new URLSearchParams(location.search);
-  state.search = (params.get("q") || "").toLocaleLowerCase(); state.channel = params.get("channel") || ""; state.dub = params.get("dub") || ""; state.status = params.get("status") || "";
+  state.search = (params.get("q") || "").toLocaleLowerCase(); state.channel = params.get("channel") || ""; state.dub = params.get("dub") || ""; state.region = params.get("region") || ""; state.status = params.get("status") || "";
   state.includeUnconfirmed = params.get("unconfirmed") === "1" || state.includeUnconfirmed;
   state.favoritesOnly = params.get("favorites") === "1" || state.favoritesOnly;
   if (params.get("tz") && isTimeZone(params.get("tz"))) state.timeZone = params.get("tz");
   if (!params.get("date")) state.selectedDate = dateKeyInZone(new Date(), state.timeZone);
   if (params.get("date") && /^\d{4}-\d{2}-\d{2}$/.test(params.get("date"))) state.selectedDate = params.get("date");
   if (params.get("month") && /^\d{4}-\d{2}$/.test(params.get("month"))) { const [year, month] = params.get("month").split("-").map(Number); state.month = new Date(year, month - 1, 1); } else state.month = monthFromKey(state.selectedDate);
-  el["search-input"].value = state.search; el["clear-search"].hidden = !state.search; el["include-unconfirmed"].checked = state.includeUnconfirmed; el["favorites-only"].checked = state.favoritesOnly;
+  el["search-input"].value = state.search; el["clear-search"].hidden = !state.search; if (el["region-filter"]) el["region-filter"].value = state.region; el["include-unconfirmed"].checked = state.includeUnconfirmed; el["favorites-only"].checked = state.favoritesOnly;
 }
 function updateUrlState() {
   const params = new URLSearchParams();
@@ -497,6 +515,8 @@ function validateData() {
       if (!airing.channel) issues.push(`${label}: missing channel.`);
       if (!languages.length) issues.push(`${label}: missing dub/language; use dub: "English" or dub: ["English", "French"].`);
       if (!airing.source || !/^https?:\/\//i.test(airing.source)) issues.push(`${label}: missing valid source URL.`);
+      if (!airing.region && !airing.regions && !airing.country) issues.push(`${label}: region/country not supplied (optional but recommended for international tracking).`);
+      if (airing.lastVerified && /^\d{4}-\d{2}-\d{2}$/.test(airing.lastVerified)) { const age = (Date.now() - Date.parse(`${airing.lastVerified}T00:00:00Z`)) / 86400000; if (age > 180) issues.push(`${label}: source last verified over 180 days ago.`); }
       if (!airing.lastVerified) issues.push(`${label}: lastVerified date not supplied.`);
       else if (!/^\d{4}-\d{2}-\d{2}$/.test(airing.lastVerified) || Number.isNaN(Date.parse(`${airing.lastVerified}T00:00:00Z`))) issues.push(`${label}: lastVerified must use YYYY-MM-DD format.`);
       if (date) {
@@ -551,4 +571,71 @@ function checkReminder() {
   if (!next) return;
   const key = `${next.episode.id}-${next.date.toISOString()}-${next.channel}`; if (state.notifiedKeys.has(key)) return;
   state.notifiedKeys.add(key); new Notification("Miraculous S7 airing soon", { body: `Episode ${next.episode.number ?? next.episode.id} · ${next.channel || "Channel not specified"} · ${next.languages.join(" / ")}` });
+}
+
+
+// International coverage, source-quality overview, and a private browser-local watch tracker.
+function episodeStableKey(episode) { return String(episode.id ?? episode.number ?? episode.title ?? ""); }
+function saveLocalTracker() {
+  try { localStorage.setItem("mlbS7Preferences", JSON.stringify({ favoriteChannels: state.favoriteChannels, favoriteDubs: state.favoriteDubs, watchedEpisodes: state.watchedEpisodes, watchlistEpisodes: state.watchlistEpisodes, favoritesOnly: state.favoritesOnly, includeUnconfirmed: state.includeUnconfirmed, timeZone: state.timeZone })); } catch (_) {}
+}
+function makeWatchButton(episode) {
+  const key = episodeStableKey(episode); const button = document.createElement("button"); button.type = "button"; button.className = "button button-quiet watch-toggle";
+  const watched = state.watchedEpisodes.includes(key); const saved = state.watchlistEpisodes.includes(key);
+  button.textContent = watched ? "✓ Watched" : saved ? "★ In watchlist · mark watched" : "+ Watchlist";
+  button.setAttribute("aria-label", `${watched ? "Mark unwatched" : saved ? "Mark watched" : "Add to watchlist"}: Episode ${episode.number ?? episode.id ?? "?"}`);
+  button.addEventListener("click", () => {
+    if (watched) { state.watchedEpisodes = state.watchedEpisodes.filter(item => item !== key); }
+    else if (saved) { state.watchlistEpisodes = state.watchlistEpisodes.filter(item => item !== key); state.watchedEpisodes.push(key); }
+    else { state.watchlistEpisodes.push(key); }
+    saveLocalTracker(); renderAll();
+  });
+  button.addEventListener("contextmenu", event => { event.preventDefault(); if (!state.watchedEpisodes.includes(key)) state.watchedEpisodes.push(key); state.watchlistEpisodes = state.watchlistEpisodes.filter(item => item !== key); saveLocalTracker(); renderAll(); });
+  button.title = "Click to cycle watchlist status; right-click to mark watched on desktop.";
+  return button;
+}
+function renderWatchlist() {
+  const target = el["watchlist-content"]; if (!target) return; target.replaceChildren();
+  const unique = new Map(state.episodes.map(ep => [episodeStableKey(ep), ep]));
+  const entries = [...unique.entries()].filter(([key]) => state.watchlistEpisodes.includes(key) || state.watchedEpisodes.includes(key));
+  el["watchlist-count"].textContent = `${state.watchedEpisodes.length} watched · ${state.watchlistEpisodes.length} saved`;
+  if (!entries.length) { target.append(makeEmptyState("Your watchlist is empty", "Use + Watchlist on an episode to save it here. Your list stays in this browser.")); return; }
+  entries.sort((a,b) => Number(a[1].number ?? a[1].id) - Number(b[1].number ?? b[1].id));
+  entries.forEach(([key, episode]) => {
+    const row = document.createElement("article"); row.className = "watchlist-item";
+    const info = document.createElement("div"); info.append(makeEpisodeNode(episode), textNode(state.watchedEpisodes.includes(key) ? "Watched" : "Plan to watch", "muted small"));
+    const actions = document.createElement("div"); actions.className = "watchlist-actions";
+    const toggle = document.createElement("button"); toggle.type = "button"; toggle.className = "button button-secondary"; toggle.textContent = state.watchedEpisodes.includes(key) ? "Mark unwatched" : "Mark watched";
+    toggle.addEventListener("click", () => { if (state.watchedEpisodes.includes(key)) state.watchedEpisodes = state.watchedEpisodes.filter(v => v !== key); else { state.watchedEpisodes.push(key); state.watchlistEpisodes = state.watchlistEpisodes.filter(v => v !== key); } saveLocalTracker(); renderAll(); });
+    const remove = document.createElement("button"); remove.type = "button"; remove.className = "button button-quiet"; remove.textContent = "Remove";
+    remove.addEventListener("click", () => { state.watchlistEpisodes = state.watchlistEpisodes.filter(v => v !== key); state.watchedEpisodes = state.watchedEpisodes.filter(v => v !== key); saveLocalTracker(); renderAll(); });
+    actions.append(toggle, remove); row.append(info, actions); target.append(row);
+  });
+}
+function renderVerification() {
+  const target = el["verification-content"]; if (!target) return; target.replaceChildren();
+  const records = state.episodes.flatMap(episode => (Array.isArray(episode.airings) ? episode.airings : []).map(airing => ({episode, airing})));
+  const now = Date.now(); let missingSource=0, missingVerified=0, stale=0, missingRegion=0, invalidSource=0;
+  records.forEach(({airing}) => {
+    if (!airing.source) missingSource++;
+    else if (!/^https?:\/\//i.test(airing.source)) invalidSource++;
+    if (!airing.lastVerified) missingVerified++;
+    else if (/^\d{4}-\d{2}-\d{2}$/.test(airing.lastVerified) && now - Date.parse(`${airing.lastVerified}T00:00:00Z`) > 180*86400000) stale++;
+    if (!(airing.region || airing.regions || airing.country)) missingRegion++;
+  });
+  const grid = document.createElement("div"); grid.className="verification-stats";
+  [["Airing records",records.length],["Missing source",missingSource],["Invalid source URL",invalidSource],["Missing check date",missingVerified],["Check older than 180 days",stale],["Missing region",missingRegion]].forEach(([label,value])=>{const box=document.createElement("div");box.className="verification-stat";box.append(textNode(String(value),"verification-number"),textNode(label,"muted small"));grid.append(box);});
+  target.append(grid);
+  const list=document.createElement("div");list.className="verification-list";
+  records.forEach(({episode,airing})=>{
+    const status = !airing.source ? "Missing source" : !/^https?:\/\//i.test(airing.source) ? "Invalid source URL" : !airing.lastVerified ? "Not checked" : (now-Date.parse(`${airing.lastVerified}T00:00:00Z`)>180*86400000 ? "Stale check" : "Metadata complete");
+    const row=document.createElement("article");row.className="verification-row";
+    const label=document.createElement("div");label.append(textNode(`Episode ${episode.number ?? episode.id ?? "?"}${episode.title ? ` — ${episode.title}` : ""}`,"verification-episode"),textNode(`${airing.channel || "Channel unspecified"} · ${normalizeRegions(airing).join(", ") || "Region unspecified"}`,"muted small"));
+    const details=document.createElement("div");details.append(textNode(status,`verification-badge ${status === "Metadata complete" ? "is-ok" : "is-warning"}`));
+    if (airing.source && /^https?:\/\//i.test(airing.source)) { const a=document.createElement("a");a.href=airing.source;a.target="_blank";a.rel="noopener noreferrer";a.className="source-link";a.textContent=airing.sourcePublisher ? `Source: ${airing.sourcePublisher}` : "Open source ↗";details.append(a); }
+    if (airing.evidenceType) details.append(textNode(`Evidence: ${airing.evidenceType}`,"muted small"));
+    if (airing.lastVerified) details.append(textNode(`Last checked: ${airing.lastVerified}`,"muted small"));
+    row.append(label,details);list.append(row);
+  });
+  if (!records.length) target.append(makeEmptyState("No source records yet", "When verified airing records are added, this dashboard will report source and regional metadata completeness.")); else target.append(list);
 }

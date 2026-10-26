@@ -141,7 +141,17 @@
           "region": "Latin America",
           "dub": "Spanish",
           "firstAirUtc": "2026-11-23T23:30:00.000Z",
-          "status": "announced"
+          "status": "rumored",
+          "source": "https://x.com/jesusmiraculer_/status/2114098909928694009",
+          "sourcePublisher": "Senti-Jesus",
+          "evidenceType": "Unofficial premiere date",
+          "lastVerified": "2026-10-26",
+          "history": [
+            {
+              "date": "2026-10-26",
+              "message": "Posted unofficial 701 premiere date without a reliable source."
+            }
+          ]
         }
       ]
     },

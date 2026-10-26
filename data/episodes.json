@@ -148,7 +148,7 @@
           "lastVerified": "2026-10-26",
           "history": [
             {
-              "date": "2026-10-26",
+              "date": "2026-10-24",
               "message": "Posted unofficial 701 premiere date without a reliable source."
             }
           ]
@@ -275,6 +275,17 @@
       "title": "Dislove",
       "airings": [
         {
+          "channel": "RTS 1",
+          "region": "Switzerland",
+          "dub": "French",
+          "firstAirUtc": "2026-11-08T08:00:00.000Z",
+          "status": "confirmed",
+          "source": "https://www.programme-tv.com/television/1261656032/miraculous-les-aventures-de-ladybug-et-chat-noir.html",
+          "sourcePublisher": "Programme TV",
+          "evidenceType": "Official schedule",
+          "lastVerified": "2026-10-26"
+        },
+        {
           "channel": "TF1",
           "region": "France",
           "dub": "French",
@@ -290,13 +301,6 @@
               "message": "Posted the article post."
             }
           ]
-        },
-        {
-          "channel": "RTS 1",
-          "region": "Switzerland",
-          "dub": "French",
-          "firstAirUtc": "2026-11-08T08:00:00.000Z",
-          "status": "announced"
         },
         {
           "channel": "Disney Channel EMEA",

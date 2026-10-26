@@ -9,6 +9,23 @@
       "title": "Replay Value (The Right Time - Part 1)",
       "airings": [
         {
+          "channel": "Globoplay",
+          "region": "Brazil",
+          "dub": "Portuguese",
+          "firstAirUtc": "2026-10-30T20:00:00.000Z",
+          "status": "confirmed",
+          "source": "https://www.instagram.com/p/De9hiVpxemX",
+          "sourcePublisher": "Mundo Gloob",
+          "evidenceType": "Official social media post",
+          "lastVerified": "2026-10-26",
+          "history": [
+            {
+              "date": "2026-10-26",
+              "message": "Posted 701 pre-release date."
+            }
+          ]
+        }
+        {
           "channel": "Gloob",
           "region": "Brazil",
           "dub": "Portuguese",

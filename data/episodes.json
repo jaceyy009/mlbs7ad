@@ -164,7 +164,7 @@
           "channel": "Gloob",
           "region": "Brazil",
           "dub": "Portuguese",
-          "firstAirUtc": "2026-10-30T22:45:00.000Z",
+          "firstAirUtc": "2026-10-30T23:07:00.000Z",
           "status": "confirmed",
           "source": "https://www.instagram.com/reel/DeuH6DrtBJg",
           "sourcePublisher": "Mundo Gloob",
@@ -174,6 +174,10 @@
             {
               "date": "2026-10-20",
               "message": "Announced 701 and 702 premiere date."
+            },
+            {
+              "date": "2026-10-27",
+              "message": "Posted premiere time for 702. Needs source."
             }
           ]
         },

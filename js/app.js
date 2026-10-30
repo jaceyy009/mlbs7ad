@@ -59,7 +59,7 @@ async function init() {
     el["load-error"].textContent = `${error.message} If you opened index.html directly, use GitHub Pages or run a local web server.`;
     renderCalendar(); renderSelectedDay(); renderNextAiring(); renderHistory();
   }
-  window.setInterval(() => { checkReminder(); renderNextAiring(); }, 60000);
+  window.setInterval(() => { checkReminder(); renderNextAiring(); }, 1000);
 }
 
 function bindEvents() {
@@ -330,16 +330,90 @@ function renderSearch() {
 }
 function renderNextAiring() {
   const target = el["next-airing-content"]; target.replaceChildren();
-  const now = Date.now(); const next = allAirings().filter(item => isConfirmed(item) && item.date.getTime() >= now).sort((a, b) => a.date - b.date)[0];
+  const now = Date.now();
+  const confirmed = allAirings().filter(item => isConfirmed(item));
+  const next = confirmed.filter(item => item.date.getTime() >= now).sort((a, b) => a.date - b.date)[0];
+
+  // Premiere means the earliest confirmed airing for that episode across every channel,
+  // region, and dub. Later premieres of the same episode never restart this countdown.
+  const firstPremieres = new Map();
+  confirmed.forEach(item => {
+    const key = episodeStableKey(item.episode);
+    const previous = firstPremieres.get(key);
+    if (!previous || item.date < previous.date) firstPremieres.set(key, item);
+  });
+  const premiereCountdown = [...firstPremieres.values()]
+    .filter(item => item.date.getTime() > now && item.date.getTime() - now <= 24 * 60 * 60 * 1000)
+    .sort((a, b) => a.date - b.date)[0];
+
+  if (premiereCountdown) {
+    target.classList.add("premiere-countdown-active");
+    const item = premiereCountdown;
+    const banner = document.createElement("article"); banner.className = "premiere-countdown-banner";
+    const art = createEpisodeImage(item.episode, true);
+    art.classList.add("premiere-countdown-art");
+    const content = document.createElement("div"); content.className = "premiere-countdown-content";
+    content.append(textNode("THE FIRST PREMIERE IS ALMOST HERE", "premiere-kicker"));
+    const title = document.createElement("h3"); title.className = "premiere-title";
+    title.textContent = `Episode ${item.episode.number ?? item.episode.id ?? "?"}${item.episode.title ? ` — ${item.episode.title}` : ""}`;
+    content.append(title);
+    if (item.episode.synopsis || item.episode.description) content.append(textNode(item.episode.synopsis || item.episode.description, "premiere-description"));
+    content.append(textNode(`First premiere: ${item.channel || "Channel not specified"} · ${item.languages.join(" / ") || "Language not specified"} · ${item.regions.join(" / ") || "Region not specified"}`, "premiere-meta"));
+    content.append(textNode(`${formatDate(item.date)} · ${formatTime(item.date)} (${state.timeZone})`, "premiere-date"));
+    const countdown = document.createElement("div"); countdown.className = "premiere-countdown-clock"; countdown.setAttribute("role", "timer"); countdown.setAttribute("aria-live", "off");
+    countdown.textContent = premiereCountdownText(item.date);
+    content.append(countdown);
+    const note = document.createElement("p"); note.className = "premiere-note"; note.textContent = "This countdown targets the episode’s earliest confirmed premiere—not later airings on other channels."; content.append(note);
+    const actions = document.createElement("div"); actions.className = "premiere-actions";
+    actions.append(makeWatchButton(item.episode));
+    const jump = document.createElement("button"); jump.type = "button"; jump.className = "button button-secondary"; jump.textContent = "View premiere date";
+    jump.addEventListener("click", () => { state.selectedDate = item.localDate; state.month = monthFromKey(item.localDate); renderAll(); updateUrlState(); document.querySelector(".day-panel").scrollIntoView({ behavior: "smooth", block: "start" }); });
+    actions.append(jump); content.append(actions);
+    banner.append(art, content); target.append(banner); return;
+  }
+
+  target.classList.remove("premiere-countdown-active");
   if (!next) { target.append(makeEmptyState("No upcoming confirmed airing in the data", "When a confirmed future first-air date is added to data/episodes.json, it will appear here.")); return; }
-  const info = document.createElement("div"); info.className = "next-airing-info"; info.append(makeEpisodeNode(next.episode));
+  const info = document.createElement("div"); info.className = "next-airing-info";
+  const art = createEpisodeImage(next.episode, false); art.classList.add("next-airing-art"); info.append(art, makeEpisodeNode(next.episode, false));
   info.append(textNode(`${next.channel || "Channel not specified"} · ${next.languages.join(" / ") || "Language not specified"}`, "next-airing-meta"));
   info.append(textNode(`${formatDate(next.date)} · ${formatTime(next.date)} (${state.timeZone})`, "next-airing-date"));
   const countdown = document.createElement("span"); countdown.className = "countdown"; countdown.textContent = countdownText(next.date);
   const jump = document.createElement("button"); jump.type = "button"; jump.className = "button button-secondary"; jump.textContent = "View date";
-  jump.addEventListener("click", () => { state.selectedDate = next.localDate; state.month = monthFromKey(next.localDate); renderAll(); updateUrlState(); document.querySelector(".day-panel").scrollIntoView({ behavior: "smooth" }); });
+  jump.addEventListener("click", () => { state.selectedDate = next.localDate; state.month = monthFromKey(next.localDate); renderAll(); updateUrlState(); document.querySelector(".day-panel").scrollIntoView({ behavior: "smooth", block: "start" }); });
   target.append(info, countdown, jump);
 }
+function premiereCountdownText(date) {
+  const seconds = Math.max(0, Math.floor((date.getTime() - Date.now()) / 1000));
+  const days = Math.floor(seconds / 86400), hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60), secs = seconds % 60;
+  return `${days ? `${days}d ` : ""}${String(hours).padStart(2, "0")}h ${String(minutes).padStart(2, "0")}m ${String(secs).padStart(2, "0")}s`;
+}
+function createEpisodeImage(episode, premiere = false) {
+  const wrap = document.createElement("div");
+  const imagePath = premiere ? (episode.premiereImage || episode.countdownImage) : episode.image;
+  const fallbackPath = !premiere && (episode.image || episode.poster);
+  const path = safeImagePath(imagePath) || safeImagePath(fallbackPath);
+  wrap.className = `episode-art${premiere ? " episode-art-premiere" : ""}${path ? " has-image" : " is-placeholder"}`;
+  if (path) {
+    const img = document.createElement("img"); img.src = path;
+    img.alt = premiere ? `Special premiere artwork for episode ${episode.number ?? episode.id ?? "?"}` : `Artwork for episode ${episode.number ?? episode.id ?? "?"}`;
+    img.loading = premiere ? "eager" : "lazy"; img.decoding = "async";
+    img.addEventListener("error", () => { wrap.replaceChildren(textNode("MLB S7", "episode-art-placeholder-text")); wrap.classList.remove("has-image"); wrap.classList.add("is-placeholder"); }, { once: true });
+    wrap.append(img);
+  } else {
+    wrap.append(textNode("MLB S7", "episode-art-placeholder-text"));
+  }
+  return wrap;
+}
+function safeImagePath(value) {
+  if (typeof value !== "string" || !value.trim()) return "";
+  const path = value.trim();
+  if (/^(javascript|data|vbscript):/i.test(path)) return "";
+  if (/^https?:\/\//i.test(path) || /^(\.\.\/|\.\/|\/|[\w-]+\/)/.test(path)) return path;
+  return "";
+}
+
 function renderHistory() {
   const target = el["history-content"]; target.replaceChildren();
   const entries = [];
@@ -383,11 +457,15 @@ function makeCompactAiring(item) {
 }
 function makeMetaBlock(label, value) { const block = document.createElement("div"); block.append(textNode(label, "meta-label"), textNode(value, "meta-value")); return block; }
 function makeTimeNode(date) { const wrap = document.createElement("div"); wrap.append(textNode(formatTime(date), "air-time"), textNode(formatDate(date), "air-date-small")); return wrap; }
-function makeEpisodeNode(episode) {
+function makeEpisodeNode(episode, includeArtwork = true) {
   const wrap = document.createElement("div"); const title = document.createElement("div"); title.className = "episode-name";
-  const number = episode.number !== undefined ? episode.number : episode.id; title.textContent = `Episode ${number ?? "?"}${episode.title ? ` — ${episode.title}` : ""}`; wrap.append(title);
-  if (episode.titleOriginal) wrap.append(textNode(episode.titleOriginal, "episode-subtitle"));
-  if (episode.productionCode) wrap.append(textNode(`Production code: ${episode.productionCode}`, "episode-subtitle"));
+  const number = episode.number !== undefined ? episode.number : episode.id; title.textContent = `Episode ${number ?? "?"}${episode.title ? ` — ${episode.title}` : ""}`;
+  const headingRow = document.createElement("div"); headingRow.className = "episode-heading-row";
+  if (includeArtwork) headingRow.append(createEpisodeImage(episode, false));
+  const headingText = document.createElement("div"); headingText.className = "episode-heading-text"; headingText.append(title);
+  if (episode.titleOriginal) headingText.append(textNode(episode.titleOriginal, "episode-subtitle"));
+  if (episode.productionCode) headingText.append(textNode(`Production code: ${episode.productionCode}`, "episode-subtitle"));
+  headingRow.append(headingText); wrap.append(headingRow);
   const episodeKey = String(episode.id ?? episode.number ?? "");
   const related = allAirings().filter(item => String(item.episode.id ?? item.episode.number ?? "") === episodeKey);
   if (episode.synopsis || episode.description || episode.airDateNotes || episode.productionCode || episode.titleTranslations || related.length > 0) {

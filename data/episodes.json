@@ -161,6 +161,8 @@
       "id": "702",
       "number": "2",
       "title": "Chrysalis (The Right Time - Part 2)",
+      "image": "assets/episodes/702.png",
+      "premiereImage": "assets/seasons/700_1_landscape_2b.png",
       "airings": [
         {
           "channel": "Gloob",
@@ -279,6 +281,7 @@
       "id": "703",
       "number": "3",
       "title": "Dislove",
+      "image": "assets/episodes/703.png",
       "airings": [
         {
           "channel": "RTS 1",

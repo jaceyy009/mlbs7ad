@@ -33,7 +33,7 @@
           "dub": "Portuguese",
           "firstAirUtc": "2026-10-30T22:45:00.000Z",
           "status": "confirmed",
-          "source": "https://www.instagram.com/reel/DeuH6DrtBJg",
+          "source": "https://www.instagram.com/p/DeuH6DrtBJg",
           "sourcePublisher": "Mundo Gloob",
           "evidenceType": "Official teaser",
           "lastVerified": "2026-10-25",
@@ -170,7 +170,7 @@
           "dub": "Portuguese",
           "firstAirUtc": "2026-10-30T23:07:00.000Z",
           "status": "confirmed",
-          "source": "https://www.instagram.com/reel/DeuH6DrtBJg",
+          "source": "https://www.instagram.com/p/DeuH6DrtBJg",
           "sourcePublisher": "Mundo Gloob",
           "evidenceType": "Official teaser",
           "lastVerified": "2026-10-25",
@@ -283,6 +283,23 @@
       "title": "Dislove",
       "image": "assets/episodes/703.png",
       "airings": [
+        {
+          "channel": "Gloob",
+          "region": "Brazil",
+          "dub": "Portuguese",
+          "firstAirUtc": "2026-11-06T22:45:00.000Z",
+          "status": "confirmed",
+          "source": "https://www.instagram.com/p/DflxmuAtAvw",
+          "sourcePublisher": "Mundo Gloob",
+          "evidenceType": "Official social media post",
+          "lastVerified": "2026-10-30",
+          "history": [
+            {
+              "date": "2026-10-30",
+              "message": "Posted 703 teaser and premiere date."
+            }
+          ]
+        },
         {
           "channel": "RTS 1",
           "region": "Switzerland",

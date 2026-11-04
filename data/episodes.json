@@ -493,6 +493,7 @@
       "id": "705",
       "number": "5",
       "title": "Marinette Duapin-Cheng",
+      "image": "assets/episodes/704.jpeg",
       "airings": [
         {
           "channel": "Disney Channel USA",
@@ -544,7 +545,7 @@
               "message": "Updated the article post to include new airings."
             }
           ]
-        },
+        }
       ]
     },
     {
